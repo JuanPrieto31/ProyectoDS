@@ -1,0 +1,9 @@
+Accesodatos\datos.class
+Persistencia\UsuarioRep.class
+Servicio\UsuarioServicio.class
+Presentacion\PropuestaControl.class
+Persistencia\Usuario.class
+Persistencia\PropuestaRep.class
+Servicio\PropuestaServicio.class
+Persistencia\Propuesta.class
+Presentacion\UsuarioControl.class
