@@ -1,0 +1,65 @@
+<%--
+    Menú lateral común. La página que lo incluye debe definir:
+      String activo -> "inicio" | "mias" | "crear" | "donaciones" | "perfil"
+    Expone a la página: modelo.Usuario usuario (el usuario con sesión iniciada).
+--%>
+<%
+    modelo.Usuario usuario = (modelo.Usuario) session.getAttribute("usuario");
+    String menuNombre = usuario.getNombre() == null || usuario.getNombre().trim().isEmpty() ? usuario.getCorreo() : usuario.getNombre();
+%>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+<aside class="sidebar" aria-label="Menú principal">
+    <a class="marca" href="PropuestaControl?accion=listar">
+        <span class="marca-icono" aria-hidden="true"><i class="fas fa-star"></i></span>
+        Sueños de Plata
+    </a>
+
+    <div class="usuario-chip">
+        <span class="avatar" aria-hidden="true"><%= Html.esc(menuNombre.substring(0, 1).toUpperCase())%></span>
+        <div>
+            <strong><%= Html.esc(menuNombre)%></strong>
+            <span><%= Html.esc(usuario.getRol())%></span>
+        </div>
+    </div>
+
+    <nav>
+        <ul class="menu">
+            <li><a href="PropuestaControl?accion=listar" <%= "inicio".equals(activo) ? "aria-current=\"page\"" : ""%>><i class="fas fa-house"></i> Inicio</a></li>
+            <% if (usuario.esAdultoMayor()) {%>
+            <li><a href="PropuestaControl?accion=listar&filtro=mias" <%= "mias".equals(activo) ? "aria-current=\"page\"" : ""%>><i class="fas fa-star"></i> Mis sueños</a></li>
+            <li><a href="PropuestaControl?accion=nuevo" <%= "crear".equals(activo) ? "aria-current=\"page\"" : ""%>><i class="fas fa-circle-plus"></i> Publicar un sueño</a></li>
+            <% }%>
+            <li><a href="DonacionControl?accion=mis" <%= "donaciones".equals(activo) ? "aria-current=\"page\"" : ""%>><i class="fas fa-hand-holding-heart"></i> Mis donaciones</a></li>
+            <li><a href="UsuarioControl?accion=perfil" <%= "perfil".equals(activo) ? "aria-current=\"page\"" : ""%>><i class="fas fa-user"></i> Mi perfil</a></li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-pie">
+        <button type="button" class="boton-texto" id="botonTexto" aria-pressed="false">
+            <i class="fas fa-text-height" aria-hidden="true"></i> <span>Letra más grande</span>
+        </button>
+        <a class="boton-texto" href="UsuarioControl?accion=salir">
+            <i class="fas fa-right-from-bracket" aria-hidden="true"></i> Cerrar sesión
+        </a>
+    </div>
+</aside>
+<script>
+    (function () {
+        var boton = document.getElementById("botonTexto");
+        var html = document.documentElement;
+        function pintar() {
+            var grande = html.classList.contains("texto-grande");
+            boton.setAttribute("aria-pressed", grande ? "true" : "false");
+            boton.querySelector("span").textContent = grande ? "Letra normal" : "Letra más grande";
+        }
+        boton.addEventListener("click", function () {
+            html.classList.toggle("texto-grande");
+            try {
+                localStorage.setItem("texto-grande", html.classList.contains("texto-grande") ? "1" : "0");
+            } catch (e) {
+            }
+            pintar();
+        });
+        pintar();
+    })();
+</script>
